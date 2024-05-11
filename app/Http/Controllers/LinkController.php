@@ -7,6 +7,7 @@ use App\Http\Requests\StoreLinkRequest;
 use App\Http\Requests\UpdateLinkRequest;
 use App\Interfaces\LinkRepositoryInterface;
 use App\Classes\ApiResponseHandler;
+use App\Http\Resources\LinkResource;
 use Illuminate\Support\Facades\DB;
 
 class LinkController extends Controller
@@ -16,14 +17,16 @@ class LinkController extends Controller
 
     public function __construct(LinkRepositoryInterface $linkRepositoryInterface)
     {
-        $this->linkRepositoryInterface = $linkRepositoryInterface;
+        $this->linkRepositoryInterface = $linkRepositoryInterface; // 
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $data = $this->linkRepositoryInterface->getAll();
+
+        return ApiResponseHandler::sendResponse(new LinkResource($data), 'List of shortned url\'s retrieved with success. ', 200);
     }
 
     /**
@@ -35,11 +38,14 @@ class LinkController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created short_url in storage.
      */
-    public function store(StoreLinkRequest $request)
+    public function store(StoreLinkRequest $request) //POST
     {
         //
+        $details = [
+            'shortUrl' => $request->shortUrl
+        ];
     }
 
     /**

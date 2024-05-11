@@ -14,6 +14,13 @@ class LinkRepository implements LinkRepositoryInterface
     {
 
     }
+    public function getAll(): array
+    {
+        $link = Link::all()->toArray();
+
+        return $link ? $link : [];
+
+    }
     public function findByLongUrl(string $longUrl): ?string
     {
         $link = Link::where('long_url', $longUrl)->first();
