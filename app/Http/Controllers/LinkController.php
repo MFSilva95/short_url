@@ -5,9 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Link;
 use App\Http\Requests\StoreLinkRequest;
 use App\Http\Requests\UpdateLinkRequest;
+use App\Interfaces\LinkRepositoryInterface;
+use App\Classes\ApiResponseHandler;
+use Illuminate\Support\Facades\DB;
 
 class LinkController extends Controller
 {
+
+    private LinkRepositoryInterface $linkRepositoryInterface;
+
+    public function __construct(LinkRepositoryInterface $linkRepositoryInterface)
+    {
+        $this->linkRepositoryInterface = $linkRepositoryInterface;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -17,7 +27,7 @@ class LinkController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Create new short url
      */
     public function create()
     {

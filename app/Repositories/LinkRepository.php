@@ -14,22 +14,35 @@ class LinkRepository implements LinkRepositoryInterface
     {
 
     }
-    public function getShortUrl(string $longUrl): ?string
+    public function findByLongUrl(string $longUrl): ?string
     {
-    }
-    public function getLongUrl(string $shortUrl): ?string
-    {
+        $link = Link::where('long_url', $longUrl)->first();
+        return $link ? $link->short_url : null;
 
     }
-    public function createShortUrl(array $data): string // can also return null
+    public function findByShortUrl(string $shortUrl): ?string
     {
+        $link = Link::where('short_url', $shortUrl)->first();
+        return $link ? $link->long_url : null;
 
     }
-    public function updateLongUrl(string $shortUrl, string $newLongUrl): bool
+    public function createShortUrl(string $longUrl): string // can also return null
+    {
+        //!TODO
+        $shortUrl = "test";
+        Link::create([
+            'short_url' => $shortUrl,
+            'long_url' => $longUrl
+        ]);
+        return $shortUrl;
+
+
+    }
+    public function updateShortUrl(string $newShortUrl, string $longUrl): bool
     {
     }
     public function deleteShortUrl(string $shortUrl): bool
     {
-
+        return Link::where('short_url', $shortUrl)->delete();
     }
 }
