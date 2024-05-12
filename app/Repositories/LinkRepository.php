@@ -20,10 +20,10 @@ class LinkRepository implements LinkRepositoryInterface
         return $link ? $link : [];
 
     }
-    public function findByLongUrl(string $longUrl): ?string
+    public function findByLongUrl(string $longUrl): ?array
     {
         $link = Link::where('long_url', $longUrl)->first();
-        return $link ? $link->short_url : null;
+        return $link ? $link->toArray() : null;
 
     }
     public function findByShortUrl(string $shortUrl): ?string
@@ -32,15 +32,19 @@ class LinkRepository implements LinkRepositoryInterface
         return $link ? $link->long_url : null;
 
     }
-    public function createShortUrl(string $longUrl): string // can also return null
+    public function createShortUrl(array $data): ?array // can also return null
     {
-        //!TODO
-        $shortUrl = "test";
-        Link::create([
-            'short_url' => $shortUrl,
-            'long_url' => $longUrl
+
+        if (!isset($data['shortUrl']) || !isset($data['longUrl'])) {
+            return null;
+        }
+        $newLink = Link::create([
+            'short_url' => $data['shortUrl'],
+            'long_url' => $data['longUrl']
         ]);
-        return $shortUrl;
+
+
+        return $newLink ? $newLink->toArray() : null;
 
 
     }
