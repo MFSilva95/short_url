@@ -13,7 +13,7 @@ class StoreLinkRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,10 +23,8 @@ class StoreLinkRequest extends FormRequest
      */
     public function rules(): array
     {
-        //!TODO:
         return [
-            'name' => 'required',
-            'details' => 'required'
+            'longUrl' => 'required',
         ];
     }
     public function failedValidation(Validator $validator)

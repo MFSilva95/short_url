@@ -12,7 +12,6 @@ class LinkRepository implements LinkRepositoryInterface
      */
     public function __construct()
     {
-
     }
     public function getAll(): array
     {
@@ -47,6 +46,8 @@ class LinkRepository implements LinkRepositoryInterface
     }
     public function updateShortUrl(string $newShortUrl, string $longUrl): bool
     {
+
+        return true;
     }
     public function deleteShortUrl(string $shortUrl): bool
     {

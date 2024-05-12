@@ -11,7 +11,7 @@ class ApiResponseHandler
     /**
      * Class responsible to simplify the handling of API responses
      */
-    //!TODO
+    //!TODO 
     public function __construct()
     {
         //
@@ -25,7 +25,6 @@ class ApiResponseHandler
 
     public static function throw($e, $message = "Something went wrong! Process not completed")
     {
-        Log::info($e);
         throw new HttpResponseException(response()->json(["message" => $message], 500));
     }
 
