@@ -11,6 +11,8 @@ use App\Classes\ShortUrlService;
 use App\Http\Resources\LinkResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class LinkController extends Controller
 {
@@ -114,5 +116,20 @@ class LinkController extends Controller
     public function destroy(Link $link)
     {
         //
+    }
+    public function redirectToUrl($shortUrl)
+    {
+        // Assuming you have a mapping of short URLs to full URLs
+        $fullUrl = $this->linkRepositoryInterface->findByShortUrl($shortUrl);
+
+
+        if ($fullUrl) {
+            if (!preg_match('#^https?://#i', $fullUrl)) {
+                $fullUrl = 'http://' . $fullUrl;
+            }
+            return Redirect::away($fullUrl);
+        } else {
+            abort(404);
+        }
     }
 }
