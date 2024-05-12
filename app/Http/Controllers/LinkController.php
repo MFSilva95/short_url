@@ -51,8 +51,6 @@ class LinkController extends Controller
         ];
         $existsLongUrl = $this->linkRepositoryInterface->findByLongUrl($details['longUrl']);
 
-        // print_r(json_encode($existsLongUrl));
-        // die();
         if ($existsLongUrl) { // long url already exists in DB
             //return existing long url  
             return ApiResponseHandler::sendResponse(new LinkResource($existsLongUrl), 'Shortned url retrieved. ', 200);
@@ -74,10 +72,13 @@ class LinkController extends Controller
                     $updateLink = $this->linkRepositoryInterface->updateShortUrl($newEntry, $tinyHash);
 
                 }
-                return $updateLink;
+                $createdTinyUrl = $this->linkRepositoryInterface->findByLongUrl($details['longUrl']);
+                return ApiResponseHandler::sendResponse(new LinkResource($createdTinyUrl), 'Shortned url created. ', 200);
+
 
             } catch (\Exception $e) {
-
+                //TODO : need to verify this part
+                return ApiResponseHandler::rollback($e->getMessage(), 'Shortned url retrieved. ');
             }
         }
 

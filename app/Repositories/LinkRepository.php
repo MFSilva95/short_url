@@ -45,7 +45,7 @@ class LinkRepository implements LinkRepositoryInterface
     public function findByShortUrl(string $shortUrl): ?string
     {
         $link = Link::where('short_url', $shortUrl)->first();
-        return $link ? $link->long_url : null;
+        return $link ? $link->toArray() : null;
 
     }
     public function updateShortUrl(array $entry, string $tinyHash): bool

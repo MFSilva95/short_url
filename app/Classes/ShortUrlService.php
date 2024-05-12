@@ -24,11 +24,25 @@ class ShortUrlService
     }
     protected function generateShortUrl(array $data): string
     {
-        // choose to go with the easy way - prefix will be the  
-        $hash = crc32("SALT" . intval($data["id"]));
+        // choose to go with the easy way - prefix will be the 
+        $salt = $this->generateRandomString();
+        $hash = crc32($salt . intval($data["id"]));
         $base64Hash = base64_encode(pack('N', $hash));
+        // TODO: make sure that hash is (maybe) max 10length
+        //ajust hash to unsure consistency in the length
         // TODO: issues with collisions - change this? add salt? add prefix?
         return $base64Hash;
 
+    }
+
+    protected function generateRandomString($length = 5)
+    {
+        $characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        $randomString = "";
+        while (strlen($randomString) < $length) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        return $randomString;
     }
 }
