@@ -64,10 +64,18 @@ class LinkController extends Controller
                 $details['shortUrl'] = 'placeholder_' . time() . '_' . Str::random(5);
                 $newEntry = $this->linkRepositoryInterface->createShortUrl($details);
                 DB::commit();
+                $updateLink = false;
                 //lets create the tinyUrl
-                $newTinyUrl = $this->shortUrlService->createShortUrl($newEntry);
-                print_r(json_encode($newEntry));
-                die();
+                while ($updateLink === false) {
+                    $tinyHash = $this->shortUrlService->createShortUrl($newEntry);
+
+                    // lets try to insert new tinyurl
+
+                    $updateLink = $this->linkRepositoryInterface->updateShortUrl($newEntry, $tinyHash);
+
+                }
+                return $updateLink;
+
             } catch (\Exception $e) {
 
             }

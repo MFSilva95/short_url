@@ -26,12 +26,6 @@ class LinkRepository implements LinkRepositoryInterface
         return $link ? $link->toArray() : null;
 
     }
-    public function findByShortUrl(string $shortUrl): ?string
-    {
-        $link = Link::where('short_url', $shortUrl)->first();
-        return $link ? $link->long_url : null;
-
-    }
     public function createShortUrl(array $data): ?array // can also return null
     {
 
@@ -48,10 +42,23 @@ class LinkRepository implements LinkRepositoryInterface
 
 
     }
-    public function updateShortUrl(string $newShortUrl, string $longUrl): bool
+    public function findByShortUrl(string $shortUrl): ?string
     {
+        $link = Link::where('short_url', $shortUrl)->first();
+        return $link ? $link->long_url : null;
 
-        return true;
+    }
+    public function updateShortUrl(array $entry, string $tinyHash): bool
+    {
+        try {
+            $link = Link::where('id', $entry['id'])
+                ->update(['short_url' => $tinyHash]);
+
+            return true;
+
+        } catch (\Exception $e) {
+            return false;
+        }
     }
     public function deleteShortUrl(string $shortUrl): bool
     {
