@@ -1,0 +1,22 @@
+version: "3.1"
+
+services:
+  db:
+    image: mariadb:latest
+    container_name: url_shortener_db
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./dbdata/url_shortener_db:/var/lib/mysql
+    ports:
+      - 3200:3306
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: url_shortener_phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST:url_shortener_db
