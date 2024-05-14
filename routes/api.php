@@ -12,5 +12,5 @@ Route::get('/user', function (Request $request) {
  * get /links -> index
  * post /links -> store
  */
-Route::get('/{shortUrl}', [LinkController::class, 'redirectToUrl']);
 Route::apiResource('/links', LinkController::class);
+Route::get('/{shortUrl}', [LinkController::class, 'redirectToUrl']);

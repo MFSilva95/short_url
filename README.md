@@ -18,3 +18,10 @@ API for creation and redirection of short URL
 -   Run migrations in shell: `php artisan migrate`
 
 ### Can also create the db with XAMPP or other method you like
+
+## Endpoints
+
+| Endpoint        | method | Description      |
+| --------------- | ------ | ---------------- |
+| /api/links      | POST   | Create short url |
+| /api/{shortUrl} | GET    | Redirect         |
