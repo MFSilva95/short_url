@@ -59,28 +59,31 @@ class LinkController extends Controller
         } else {
             try {
 
-                DB::beginTransaction();
-                //create provisory to get id
-                $details['shortUrl'] = 'placeholder_' . time() . '_' . Str::random(5);
-                $newEntry = $this->linkRepositoryInterface->createShortUrl($details);
-                DB::commit();
-                $updateLink = false;
-                //lets create the tinyUrl
-                while ($updateLink === false) {
-                    $tinyHash = $this->shortUrlService->createShortUrl($newEntry);
-
+                $tryAgain = false;
+                $useSalt = false;
+                while ($tryAgain === false) {
+                    $tinyHash = $this->shortUrlService->createShortUrl($details, $useSalt);
+                    $details['shortUrl'] = $tinyHash;
                     // lets try to insert new tinyurl
+                    DB::beginTransaction();
+                    $newEntry = $this->linkRepositoryInterface->createShortUrl($details);
+                    DB::commit();
+                    if (isset($newEntry["status"]) && $newEntry["status"] === false) {
+                        $useSalt = true;
+                        // we need to try again with salt
 
-                    $updateLink = $this->linkRepositoryInterface->updateShortUrl($newEntry, $tinyHash);
+                    } else if (isset($newEntry["short_url"])) {
+                        $tryAgain = true; // return
+
+                    }
+
 
                 }
-                $createdTinyUrl = $this->linkRepositoryInterface->findByLongUrl($details['longUrl']);
-                return ApiResponseHandler::sendResponse(new LinkResource($createdTinyUrl), 'Shortned url created. ', 200);
+                return ApiResponseHandler::sendResponse(new LinkResource($newEntry), 'Shortned url created. ', 200);
 
 
             } catch (\Exception $e) {
-                //TODO : need to verify this part
-                return ApiResponseHandler::rollback($e->getMessage(), 'Shortned url retrieved. ');
+                return ApiResponseHandler::rollback($e->getMessage(), 'Error creating short url. ');
             }
         }
 

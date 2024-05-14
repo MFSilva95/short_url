@@ -23,13 +23,13 @@ class StoreLinkRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
-            'longUrl' => 'required',
+            'longUrl' => 'required|url',
         ];
     }
     public function failedValidation(Validator $validator)
     {
-        //!TODO
         throw new HttpResponseException(response()->json([
             'success' => false,
             'message' => 'Validation errors',
@@ -37,4 +37,3 @@ class StoreLinkRequest extends FormRequest
         ]));
     }
 }
-// i am at the point 8 of https://medium.com/@1415sandalanka/laravel-11-rest-api-crud-with-best-practices-fcc26505e0d2

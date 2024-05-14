@@ -15,27 +15,32 @@ class ShortUrlService
         $this->linkRepository = $shortUrlService;
     }
 
-    public function createShortUrl(array $data): string
+    public function createShortUrl(array $data, bool $salt): string
     {
         // generate tiny 
-        $shortUrl = $this->generateShortUrl($data);
+        $shortUrl = $this->generateShortUrl($data, $salt);
         return $shortUrl;
 
     }
-    protected function generateShortUrl(array $data): string
+    protected function generateShortUrl(array $data, bool $rand = false): string
     {
-        // choose to go with the easy way - prefix will be the 
-        $salt = $this->generateRandomString();
-        $hash = crc32($salt . intval($data["id"]));
-        $base64Hash = base64_encode(pack('N', $hash));
-        // TODO: make sure that hash is (maybe) max 10length
-        //ajust hash to unsure consistency in the length
-        // TODO: issues with collisions - change this? add salt? add prefix?
-        return $base64Hash;
+        $salt = "";
+        if ($rand) {
+            $salt = $this->generateRandomString();
+
+        }
+        $url = $data["longUrl"] . $salt;
+        $hash = crc32($url);
+        $base62Hash = $this->base62_encode($hash);
+
+        // Ensure the hash has at worst case 10 characters
+        $base62Hash = substr($base62Hash, 0, 10);
+
+        return $base62Hash;
 
     }
 
-    protected function generateRandomString($length = 5)
+    protected function generateRandomString($length = 4)
     {
         $characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -44,5 +49,15 @@ class ShortUrlService
             $randomString .= $characters[rand(0, strlen($characters) - 1)];
         }
         return $randomString;
+    }
+    function base62_encode($num)
+    {
+        $base = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $result = '';
+        while ($num > 0) {
+            $result = $base[$num % 62] . $result;
+            $num = intval($num / 62);
+        }
+        return $result;
     }
 }

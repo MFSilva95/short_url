@@ -25,7 +25,7 @@ class ApiResponseHandler
 
     public static function throw($e, $message = "Something went wrong! Process not completed")
     {
-        throw new HttpResponseException(response()->json(["message" => $message], 500));
+        throw new HttpResponseException(response()->json(["success" => false, "message" => $message], 500));
     }
 
     public static function sendResponse($result, $message, $code = 200)

@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\Link;
 use App\Interfaces\LinkRepositoryInterface;
 
+use Illuminate\Database\QueryException;
+
 class LinkRepository implements LinkRepositoryInterface
 {
     /**
@@ -32,12 +34,19 @@ class LinkRepository implements LinkRepositoryInterface
         if (!isset($data['shortUrl']) || !isset($data['longUrl'])) {
             return null;
         }
-        $newLink = Link::create([
-            'short_url' => $data['shortUrl'],
-            'long_url' => $data['longUrl']
-        ]);
+        try {
+            $newLink = Link::create([
+                'short_url' => $data['shortUrl'],
+                'long_url' => $data['longUrl']
+            ]);
+        } catch (QueryException $e) {
+            $errorCode = $e->errorInfo[1];
+            if ($errorCode == '1062') { // exists shortUrl in DB
+                return ['status' => false];
+            }
+            throw ($e);
 
-
+        }
         return $newLink ? $newLink->toArray() : null;
 
 
